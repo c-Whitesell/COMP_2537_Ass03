@@ -29,7 +29,6 @@ class PokemonMemoryGame {
     this.allPokemon = [];
     this.selectedPokemon = [];
 
-    // DOM elements
     this.gameGrid = $('#game_grid');
     this.timerDisplay = $('#timer');
     this.clicksDisplay = $('#clicks');
@@ -119,10 +118,8 @@ class PokemonMemoryGame {
     this.difficultySelect.prop('disabled', true);
     this.powerUpBtn.prop('disabled', false);
 
-    // Update displays
     this.updateStatusDisplay();
 
-    // Fetch and shuffle Pokemon
     const pokemonToUse = this.getRandomPokemon(this.totalPairs);
     this.selectedPokemon = [];
 
@@ -140,13 +137,11 @@ class PokemonMemoryGame {
       }
     }
 
-    // Ensure we have enough Pokemon
     if (this.selectedPokemon.length < this.totalPairs) {
       console.warn('Not enough Pokemon with images, retrying...');
       return this.startGame();
     }
 
-    // Create card pairs
     this.createCards();
     this.startTimer();
   }
@@ -226,28 +221,23 @@ class PokemonMemoryGame {
     const index = card.data('index');
     const pairId = card.data('pair-id');
 
-    // Check if card is already flipped
     if (card.hasClass('flipped') || card.hasClass('matched')) {
       return;
     }
 
-    // Check if we already have 2 flipped cards (prevent flipping while animating)
     if (this.flippedCards.length >= 2) {
       return;
     }
 
-    // Check if the card is currently being flipped
     if (card.hasClass('flipping')) {
       return;
     }
 
-    // Flip the card
     card.addClass('flipped');
     this.flippedCards.push({ card, pairId, index });
     this.clicks++;
     this.updateStatusDisplay();
 
-    // Check if we have 2 cards flipped
     if (this.flippedCards.length === 2) {
       this.checkMatch();
     }
@@ -294,17 +284,12 @@ class PokemonMemoryGame {
     const card1 = this.flippedCards[0].card;
     const card2 = this.flippedCards[1].card;
 
-    // Flip cards back after delay
     setTimeout(() => {
       card1.removeClass('flipped');
       card2.removeClass('flipped');
       this.flippedCards = [];
     }, 1000);
   }
-
-  // ===========================
-  // GAME STATE MANAGEMENT
-  // ===========================
 
   startTimer() {
     clearInterval(this.timerInterval);
@@ -329,7 +314,6 @@ class PokemonMemoryGame {
     this.gameWon = true;
     clearInterval(this.timerInterval);
 
-    // Disable all cards
     $('.card').addClass('matched');
 
     setTimeout(() => {
@@ -342,7 +326,6 @@ class PokemonMemoryGame {
     this.gameLost = true;
     clearInterval(this.timerInterval);
 
-    // Flip all unmatched cards face down
     $('.card:not(.matched)').removeClass('flipped');
 
     setTimeout(() => {
@@ -370,14 +353,11 @@ class PokemonMemoryGame {
       return;
     }
 
-    // Reveal all cards for 3 seconds
     this.powerUpUsed = true;
     this.powerUpBtn.prop('disabled', true).addClass('used');
 
-    // Flip all cards to show images
     $('.card:not(.matched)').addClass('flipped');
 
-    // After 3 seconds, flip them back
     setTimeout(() => {
       $('.card:not(.matched)').removeClass('flipped');
     }, 3000);
